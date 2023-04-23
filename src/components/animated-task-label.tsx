@@ -31,10 +31,23 @@ const AnimatedTaskLabel = memo(({ strikeThrough, textColor, inactiveTextColor, o
       transform: [{ translateX: hStackOffset.value }]
     }), [strikeThrough],
   )
+
   const textColorProgress = useSharedValue(0)
   const textColorAnimatedStyles = useAnimatedStyle(
     () => ({
       color: interpolateColor(
+        textColorProgress.value,
+        [0, 1],
+        [textColor, inactiveTextColor],
+      )
+    }), [strikeThrough, textColor, inactiveTextColor]
+  )
+
+  const strikeThroughWidth = useSharedValue(0)
+  const strikeThroughAnimatedStyles = useAnimatedStyle(
+    () => ({
+      width: `${strikeThroughWidth.value * 100}%`,
+      borderBottomColor: interpolateColor(
         textColorProgress.value,
         [0, 1],
         [textColor, inactiveTextColor],
@@ -49,11 +62,13 @@ const AnimatedTaskLabel = memo(({ strikeThrough, textColor, inactiveTextColor, o
         withTiming(4, { duration: 200, easing }),
         withTiming(0, { duration: 200, easing }),
       )
+      strikeThroughWidth.value = withTiming(1, { duration: 400, easing })
       textColorProgress.value = withDelay(
         1000,
         withTiming(1, { duration: 400, easing })
       )
     } else {
+      strikeThroughWidth.value = withTiming(0, { duration: 400, easing })
       textColorProgress.value = withTiming(0, { duration: 400, easing })
     }
   }, [strikeThrough])
@@ -64,7 +79,7 @@ const AnimatedTaskLabel = memo(({ strikeThrough, textColor, inactiveTextColor, o
         <AnimatedText fontSize={19} noOfLines={1} isTruncated px={1} style={[textColorAnimatedStyles]}>
           {children}
         </AnimatedText>
-        <AnimatedBox position="absolute" borderBottomWidth={1} h={1} />
+        <AnimatedBox position="absolute" borderBottomWidth={1} h={1} style={[strikeThroughAnimatedStyles]} />
       </AnimatedHStack>
     </Pressable>
   )

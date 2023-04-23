@@ -1,13 +1,11 @@
-import {Text} from 'react-native'
-import { useColorMode } from 'native-base'
+import { TouchableOpacity, View } from 'react-native'
+import { MoonIcon, SunIcon, useColorMode } from 'native-base'
 
-export default function ThemeToggle(){
-  const { colorMode } = useColorMode();
-  const isDarkMode = colorMode === 'dark';
-
+export default function ThemeToggle() {
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
-    <Text>
-      { isDarkMode ? 'Light' : 'Dark' }
-    </Text>
+    <TouchableOpacity onPress={toggleColorMode}>
+      <View>{colorMode == 'light' ? <MoonIcon /> : <SunIcon />}</View>
+    </TouchableOpacity>
   )
 }
